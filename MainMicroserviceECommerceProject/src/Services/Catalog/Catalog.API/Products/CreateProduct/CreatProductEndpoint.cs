@@ -1,4 +1,6 @@
-﻿namespace Catalog.API.Products.CreateProduct;
+﻿using Carter.ModelBinding;
+
+namespace Catalog.API.Products.CreateProduct;
 
 public record CreateProductRequest(
     string Name,
@@ -12,9 +14,16 @@ public class CreatProductEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/products", async (CreateProductRequest request, ISender mediator) =>
+        app.MapPost("/products", async (HttpRequest httpRequest, CreateProductRequest request, ISender mediator) =>
         {
+            
             var command = request.Adapt<CreateProductCommand>();
+            //var validationResult = httpRequest.Validate(command);
+            //if (validationResult.IsValid is false)
+            //{
+            //    return Results.BadRequest(validationResult.Errors);
+            //}
+
             var response = await mediator.Send(command);
             return Results.Created($"Product Created with Id {response.Id}", response.Adapt<CreateProductResponse>());
         }).WithName("CreateProduct")

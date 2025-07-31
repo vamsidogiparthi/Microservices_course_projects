@@ -1,8 +1,5 @@
 ﻿namespace Catalog.API.Products.GetProductById;
 
-using BuildingBlocks.CQRS;
-using Catalog.API.Models;
-using Marten;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,8 +13,7 @@ public class GetProductByIdHandler(IQuerySession db) : IQueryHandler<GetProductB
     {
         var product = await db.Query<Product>()
             .FirstOrDefaultAsync(x => x.Id == query.Id, cancellationToken) ?? throw new KeyNotFoundException($"Product with Id {query.Id} not found.");
-        
-        return new GetProductByIdQueryResponse(product);
 
+        return product == null ? throw new ProductNotFoundException(nameof(Product), query.Id) : new GetProductByIdQueryResponse(product);
     }
 }
