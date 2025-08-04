@@ -14,13 +14,14 @@ public class GetBasketEndpoints : ICarterModule
         {
             var query = new GetBasketQuery(userName);
             var result = await sender.Send(query);
-            Results.Ok(result.Adapt<GetBasketResponse>());
+            var response = result.Adapt<GetBasketResponse>();
+            return Results.Ok(response);
         })
         .WithName("GetBasket")
         .WithTags("Basket")
         .WithDescription("Get a user's shopping basket")
         .Produces<GetBasketResponse>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status404NotFound)
-        .Produces(StatusCodes.Status500InternalServerError);
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .ProducesProblem(StatusCodes.Status500InternalServerError);
     }
 }

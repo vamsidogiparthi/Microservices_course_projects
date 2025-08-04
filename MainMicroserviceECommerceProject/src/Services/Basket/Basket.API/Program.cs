@@ -24,6 +24,7 @@ options =>
         .Identity(x => x.UserName);
 }).UseLightweightSessions();
 
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<StoreBasketCommandValidator>();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
