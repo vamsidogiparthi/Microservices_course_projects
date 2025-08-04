@@ -3,8 +3,9 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
-      "serviceActions": {        
-        "catalogDb": "StartWithoutDebugging"
+      "serviceActions": {
+        "catalogDb": "StartWithoutDebugging",
+        "catalog.api": "StartDebugging"
       }
     }
   }
