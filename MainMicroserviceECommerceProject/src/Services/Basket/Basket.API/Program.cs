@@ -1,11 +1,5 @@
-using Basket.API.Basket.StoreBasket;
-using BuildingBlocks.Behaviors;
-using BuildingBlocks.Exceptions.Handler;
-using Marten;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 // Add services to the container before building the app.
 
 builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssemblyContaining<Program>(); 
@@ -36,10 +30,29 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddValidatorsFromAssemblyContaining<StoreBasketCommandValidator>();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddCarter();
+
+builder.Services.AddHealthChecks()
+    .AddRedis((provider) =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("Redis");
+        ArgumentException.ThrowIfNullOrEmpty(connectionString);
+        return connectionString;
+    }, name: "RedisHealthCheck")
+    .AddNpgSql((serviceProvider) =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("BasketDb");
+        ArgumentException.ThrowIfNullOrEmpty(connectionString);
+        return connectionString;
+    }, name: "BasketDbHealthCheck");
+
 var app = builder.Build();
 
 app.MapCarter();
 app.UseExceptionHandler(opt => { });
+app.UseHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 // use the injected services
 app.Run();
