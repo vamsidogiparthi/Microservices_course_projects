@@ -413,3 +413,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/MainMicroserviceECommerceProject/src/Services/Discount/Discount.Grpc/discountdb-shm
+/MainMicroserviceECommerceProject/src/Services/Discount/Discount.Grpc/discountdb
+/MainMicroserviceECommerceProject/src/Services/Discount/Discount.Grpc/discountdb-wal
