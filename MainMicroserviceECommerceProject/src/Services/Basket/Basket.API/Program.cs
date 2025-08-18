@@ -1,12 +1,16 @@
 
+using Discount.Grpc.Protos;
+
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container before building the app.
-
+//application services
 builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssemblyContaining<Program>(); 
     cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
     cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
+builder.Services.AddCarter();
 
+// data services
 builder.Services.AddMarten(
 options =>
 {
@@ -27,9 +31,25 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "BasketRedis";
 });
 
+
+// grpc services
+
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration.GetValue<string>("GrpcSettings:DiscountUrl") ?? throw new ArgumentNullException("DiscountUrl"));
+})
+    .ConfigurePrimaryHttpMessageHandler(() =>
+{
+    return new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    };
+})
+;
+
+//  cross cutting concerns
 builder.Services.AddValidatorsFromAssemblyContaining<StoreBasketCommandValidator>();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-builder.Services.AddCarter();
 
 builder.Services.AddHealthChecks()
     .AddRedis((provider) =>
