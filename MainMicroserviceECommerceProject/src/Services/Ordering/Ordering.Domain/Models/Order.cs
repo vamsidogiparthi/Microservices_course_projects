@@ -32,7 +32,7 @@ public class Order: Aggregate<OrderId>
             Payment = payment
         };
 
-        order.AddDomainEvent(new OrderCreated(order));
+        order.AddDomainEvent(new OrderCreatedEvent(order));
 
         return order;
     }
@@ -52,16 +52,14 @@ public class Order: Aggregate<OrderId>
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
         ArgumentOutOfRangeException.ThrowIfNegative(quantity);
         var orderItem = new OrderItem(Id, productId, quantity, price);
-        _orderItems.Add(orderItem);
-        AddDomainEvent(new OrderItemAddedEvent(this, orderItem));
+        _orderItems.Add(orderItem);        
     }
 
     public void Remove(OrderItemId orderItemId)
     {
         var orderItem = _orderItems.FirstOrDefault(item => item.Id == orderItemId) ?? 
             throw new InvalidOperationException($"Order item with id {orderItemId} not found in order {Id}");
-        _orderItems.Remove(orderItem);
-        AddDomainEvent(new OrderItemRemovedEvent(this, orderItem));
+        _orderItems.Remove(orderItem);        
     }
 
 }
