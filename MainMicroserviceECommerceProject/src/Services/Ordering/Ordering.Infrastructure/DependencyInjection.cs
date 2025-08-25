@@ -1,6 +1,4 @@
-﻿
-
-using Ordering.Infrastructure.Data.Interceptors;
+﻿using Ordering.Infrastructure.Data.Interceptors;
 
 namespace Ordering.Infrastructure;
 
@@ -12,8 +10,10 @@ public static class DependencyInjection
         // Example: services.AddScoped<IOrderRepository, OrderRepository>();
         var connectionString = configuration.GetConnectionString("Database") ?? throw new InvalidOperationException("Database connection string is not configured.");
 
-        services.AddDbContext<ApplicationDbContext>((sp, options) => {
-            options.AddInterceptors(new AuditableEntityInterceptor());
+        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventInterceptor>();
+        services.AddDbContext<ApplicationDbContext>((sp, options) => {            
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseSqlServer(connectionString); });
 
 

@@ -29,7 +29,7 @@ public class AuditableEntityInterceptor: SaveChangesInterceptor
                 entry.Entity.LastModifiedBy = "system";
                 entry.Entity.LastModified = DateTime.UtcNow;
             }
-            else if (entry.State == EntityState.Modified || entry.State == EntityState.Added || entry.HasChangedOwnEntities())
+            else if (entry.State == EntityState.Modified || entry.HasChangedOwnEntities())
             {
                 entry.Entity.LastModifiedBy = "system";
                 entry.Entity.LastModified = DateTime.UtcNow;

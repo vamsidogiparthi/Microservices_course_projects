@@ -9,7 +9,7 @@ public static class DatabaseExtensions
     {
         var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        await context.Database.EnsureCreatedAsync();
+        //await context.Database.EnsureCreatedAsync();
         await context.Database.MigrateAsync();
 
         await SeedAsync(context);
