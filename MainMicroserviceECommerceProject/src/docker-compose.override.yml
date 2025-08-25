@@ -28,6 +28,15 @@ services:
     restart: always
     ports: 
       - "6379:6379"
+   
+  orderingDb:
+     container_name: ordering_db
+     environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MyRansdom1524
+     restart: always
+     ports:
+      - "1433:1433"     
 
   catalog.api:
     environment:

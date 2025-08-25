@@ -13,17 +13,17 @@ public record Payment
     {
 
     }
-    private Payment(string cardName, string cardNumber, string cvv, string expiration, string paymentMethod)
+    private Payment(string cardName, string cardNumber, string cvv, string expiration, int paymentMethod)
     {
         CardName = cardName;
         CardNumber = cardNumber;
         CVV = cvv;
         Expiration = expiration;
-        PaymentMethod = int.Parse(paymentMethod);
+        PaymentMethod = paymentMethod;
 
     }
 
-    public static Payment Of(string cardName, string cardNumber, string cvv, string expiration, string paymentMethod)
+    public static Payment Of(string cardName, string cardNumber, string expiration, string cvv, int paymentMethod)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(cardNumber);
         ArgumentException.ThrowIfNullOrWhiteSpace(cardName);

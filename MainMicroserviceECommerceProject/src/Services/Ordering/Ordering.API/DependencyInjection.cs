@@ -1,4 +1,6 @@
-﻿namespace Ordering.API;
+﻿using Ordering.Infrastructure.Data;
+
+namespace Ordering.API;
 
 public static class DependencyInjection
 {
@@ -18,6 +20,8 @@ public static class DependencyInjection
         // Example: app.UseSwagger();
         // Example: app.UseAuthorization();
         // Example: app.MapControllers();
+
+
         return app;
-    }
+    }    
 }
