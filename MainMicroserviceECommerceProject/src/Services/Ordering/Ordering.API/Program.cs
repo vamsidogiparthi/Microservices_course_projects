@@ -12,7 +12,7 @@ builder.Services.AddApiServices();
 
 var app = builder.Build();
 
-app.UseApiServices();
+
 
 if(app.Environment.IsDevelopment())
 {
@@ -20,6 +20,10 @@ if(app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     await app.InitialDatabaseAsync();
 }
+
+app.UseApiServices();
+
+//app.UseExceptionHandler(opt => { });
 
 // configure the HTTP request pipeline.
 app.Run();

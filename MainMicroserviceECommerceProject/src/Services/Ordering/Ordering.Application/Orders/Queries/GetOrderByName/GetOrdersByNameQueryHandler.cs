@@ -13,6 +13,6 @@ public class GetOrdersByNameQueryHandler(IApplicationDbContext dbContext) : IQue
             .ToListAsync(cancellationToken: cancellationToken);
         
         var orderDtos = orders.ProjectOrderDtoList();        
-        return new GetOrdersByNameResult(orderDtos);
+        return new GetOrdersByNameResult(Orders: orderDtos);
     }
 }

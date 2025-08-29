@@ -33,6 +33,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             addressBuilder.Property(a => a.State).HasMaxLength(50).IsRequired();
             addressBuilder.Property(a => a.Country).HasMaxLength(50).IsRequired();
             addressBuilder.Property(a => a.ZipCode).HasMaxLength(5).IsRequired();
+            addressBuilder.Property(a => a.EmailAddress).HasMaxLength(100).IsRequired();
 
         });
 
@@ -44,6 +45,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             addressBuilder.Property(a => a.State).HasMaxLength(50).IsRequired();
             addressBuilder.Property(a => a.Country).HasMaxLength(50).IsRequired();
             addressBuilder.Property(a => a.ZipCode).HasMaxLength(5).IsRequired();
+            addressBuilder.Property(a => a.EmailAddress).HasMaxLength(100).IsRequired();
 
         });
 

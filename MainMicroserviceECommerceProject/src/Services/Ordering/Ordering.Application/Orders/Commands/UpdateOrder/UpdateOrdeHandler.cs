@@ -5,8 +5,8 @@ public class UpdateOrdeHandler(IApplicationDbContext dbContext) : ICommandHandle
 {
     public async Task<UpdateOrderResult> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
     {
-        var existingOrder = await dbContext.Orders
-            .FindAsync([OrderId.Of(command.Order.Id)], cancellationToken) ?? throw new OrderNotFoundException(command.Order.Id);
+        var existingOrder = await dbContext.Orders.Include(o => o.OrderItems)
+            .FirstOrDefaultAsync(o => o.Id == OrderId.Of(command.Order.Id), cancellationToken) ?? throw new OrderNotFoundException(command.Order.Id);
         
         UpdateOrder(command.Order, existingOrder);
 
@@ -18,12 +18,12 @@ public class UpdateOrdeHandler(IApplicationDbContext dbContext) : ICommandHandle
 
     private static void UpdateOrder(OrderDto order, Order existingOrder)
     { 
-        var shippingAddress = Address.Of(order.ShippingAddress.Country, order.ShippingAddress.LastName,
-            order.ShippingAddress.EmailAddress, order.ShippingAddress.AddressLine,
-            order.ShippingAddress.Country, order.ShippingAddress.State, order.ShippingAddress.ZipCode);
-        var billingAddress = Address.Of(order.BillingAddress.Country, order.BillingAddress.LastName,
-            order.BillingAddress.EmailAddress, order.BillingAddress.AddressLine,
-            order.BillingAddress.Country, order.BillingAddress.State, order.BillingAddress.ZipCode);
+        var shippingAddress = Address.Of(firstName: order.ShippingAddress.FirstName, lastName: order.ShippingAddress.LastName,
+            email: order.ShippingAddress.EmailAddress, addressLine: order.ShippingAddress.AddressLine,
+            country: order.ShippingAddress.Country, state: order.ShippingAddress.State, zipCode: order.ShippingAddress.ZipCode);
+        var billingAddress = Address.Of(firstName: order.BillingAddress.FirstName, lastName: order.BillingAddress.LastName,
+            email: order.BillingAddress.EmailAddress, addressLine: order.BillingAddress.AddressLine,
+            country: order.BillingAddress.Country, state: order.BillingAddress.State, zipCode: order.BillingAddress.ZipCode);
         var payment = Payment.Of(order.Payment.CardName, order.Payment.CardNumber, order.Payment.Expiration, order.Payment.Cvv, order.Payment.PaymentType);
 
 
