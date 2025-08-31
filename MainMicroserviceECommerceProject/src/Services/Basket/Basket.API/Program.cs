@@ -1,6 +1,4 @@
 
-using Discount.Grpc.Protos;
-
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container before building the app.
 //application services
@@ -46,6 +44,8 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
     };
 })
 ;
+// add async comm services
+builder.Services.AddMessageBroker(builder.Configuration);
 
 //  cross cutting concerns
 builder.Services.AddValidatorsFromAssemblyContaining<StoreBasketCommandValidator>();
@@ -64,6 +64,7 @@ builder.Services.AddHealthChecks()
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
         return connectionString;
     }, name: "BasketDbHealthCheck");
+
 
 var app = builder.Build();
 

@@ -37,6 +37,18 @@ services:
      restart: always
      ports:
       - "1433:1433"     
+  
+  messagebroker:
+     container_name: message_broker
+     hostname: ecommerce-rabbitmq
+     environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+     restart: always
+     ports:
+      - "5672:5672"
+      - "15672:15672"
+
 
   catalog.api:
     environment:
@@ -61,11 +73,15 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__BasketDb=Server=basket_db;Port=5432;Database=basket_db;User Id=postgres;Password=postgres;Include Error Detail=true
       - ConnectionStrings__Redis=distrbutecache:6379
+      - MessageBroker__Host=amqp://ecommerce-rabbitmq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
       - GrpcSettings__DiscountUrl=https://Discount.grpc:8081
     depends_on:
       - basketDb
       - distributedCache
       - Discount.grpc 
+      - messagebroker
     ports:
       - "6001:8080"
       - "6061:8081"
@@ -89,3 +105,22 @@ services:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
    
+
+  ordering.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=ordering_db;Database=OrderDb;User Id=sa;Password=MyRansdom1524;Encrypt=False;TrustServerCertificate=True
+      - FeatureManagement__EnableOrderOrderFulfillment=true
+      - MessageBroker__Host=amqp://ecommerce-rabbitmq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
+    ports:
+      - "6003:8080"
+      - "6063:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

@@ -12,4 +12,11 @@ global using Ordering.Domain.Events;
 global using Microsoft.Extensions.Logging;
 global using Ordering.Application.Extensions;
 global using BuildingBlocks.Pagination;
-
+global using BuildingBlocks.Behaviors;
+global using BuildingBlocks.Messaging.MassTransit;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.FeatureManagement;
+global using System.Reflection;
+global using MassTransit;
+global using BuildingBlocks.Messaging.Events;

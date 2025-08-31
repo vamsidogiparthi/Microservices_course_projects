@@ -1,12 +1,10 @@
-﻿using BuildingBlocks.Behaviors;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+﻿
 
 namespace Ordering.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         // Register application services here
         // Example: services.AddScoped<IOrderService, OrderService>();
@@ -16,6 +14,9 @@ public static class DependencyInjection
             sp.AddOpenBehavior(typeof(ValidationBehavior<,>));
             sp.AddOpenBehavior(typeof(LoggingBehavior<,>));
         });
+
+        services.AddFeatureManagement();
+        services.AddMessageBroker(configuration, Assembly.GetExecutingAssembly());
         return services;
     }
 
