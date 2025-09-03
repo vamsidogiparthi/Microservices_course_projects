@@ -5,8 +5,9 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "catalogDb": "StartWithoutDebugging",
-        "catalog.api": "StartDebugging",
-        "ordering.api": "StartDebugging"
+        "catalog.api": "StartWithoutDebugging",
+        "ordering.api": "StartWithoutDebugging",
+        "yarpapigateway": "StartDebugging"
       }
     }
   }
